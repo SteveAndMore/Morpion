@@ -62,6 +62,18 @@ void Draw_Circle(SDL_Renderer * renderer, int centreX, int centreY, int radius)
    }
 }
 
+
+//Affiche soit une croix, soit un cercle sur les coordonnées de la case
+void Draw_Cell(int player, SDL_Renderer *renderer, int crossx, int crossy, int circlex, int circley)
+{
+    if (player == 1)
+        Draw_Cross(renderer, crossx, crossy);
+    if (player == 2)
+        Draw_Circle(renderer, circlex, circley, 50);
+    SDL_RenderPresent(renderer);
+}
+
+
 int main(int argc, char **argv) 
 {
     SDL_Window *window = NULL;
@@ -97,22 +109,13 @@ int main(int argc, char **argv)
                             if (morpion[0][0] == 0)
                             {
                                 morpion[0][0] = player;
-                                if (player == 1)
-                                {
-                                    Draw_Cross(renderer, 160, 135);
-                                }
-                                if (player == 2)
-                                {
-                                    Draw_Circle(renderer, 190, 160, 50);
-                                }
-                                SDL_RenderPresent(renderer);
+                                Draw_Cell(player, renderer, 160, 135, 190, 160);
                                 next_turn = 0;
                             }
                             else
                             {
                                 printf("Cette case est deja occupee.\n");
                             }
-                            
                         }
                         //Boite 2
                         else if (event.button.x >= 300 && event.button.x <= 500 && event.button.y >= 100 && event.button.y <= 250)
@@ -120,15 +123,7 @@ int main(int argc, char **argv)
                             if (morpion[0][1] == 0)
                             {
                                 morpion[0][1] = player;
-                                if (player == 1)
-                                {
-                                    Draw_Cross(renderer, 360, 135);
-                                }
-                                if (player == 2)
-                                {
-                                    Draw_Circle(renderer, 400, 160, 50);
-                                }
-                                SDL_RenderPresent(renderer);
+                                Draw_Cell(player, renderer, 360, 135, 400, 160);
                                 next_turn = 0;
                             }
                             else
@@ -142,15 +137,7 @@ int main(int argc, char **argv)
                             if (morpion[0][2] == 0)
                             {
                                 morpion[0][2] = player;
-                                if (player == 1)
-                                {
-                                    Draw_Cross(renderer, 560, 135);
-                                }
-                                if (player == 2)
-                                {
-                                    Draw_Circle(renderer, 600, 160, 50);
-                                }
-                                SDL_RenderPresent(renderer);
+                                Draw_Cell(player, renderer, 560, 135, 600, 160);
                                 next_turn = 0;
                             }
                             else
@@ -164,15 +151,7 @@ int main(int argc, char **argv)
                             if (morpion[1][0] == 0)
                             {
                                 morpion[1][0] = player;
-                                if (player == 1)
-                                {
-                                    Draw_Cross(renderer, 160, 285);
-                                }
-                                if (player == 2)
-                                {
-                                    Draw_Circle(renderer, 190, 320, 50);
-                                }
-                                SDL_RenderPresent(renderer);
+                                Draw_Cell(player, renderer, 160, 285, 190, 320);
                                 next_turn = 0;
                             }
                             else
@@ -186,15 +165,7 @@ int main(int argc, char **argv)
                             if (morpion[1][1] == 0)
                             {
                                 morpion[1][1] = player;
-                                if (player == 1)
-                                {
-                                    Draw_Cross(renderer, 360, 285);
-                                }
-                                if (player == 2)
-                                {
-                                    Draw_Circle(renderer, 400, 320, 50);
-                                }
-                                SDL_RenderPresent(renderer);
+                                Draw_Cell(player, renderer, 360, 285, 400, 320);
                                 next_turn = 0;
                             }
                             else
@@ -208,15 +179,7 @@ int main(int argc, char **argv)
                             if (morpion[1][2] == 0)
                             {
                                 morpion[1][2] = player;
-                                if (player == 1)
-                                {
-                                    Draw_Cross(renderer, 560, 285);
-                                }
-                                if (player == 2)
-                                {
-                                    Draw_Circle(renderer, 600, 320, 50);
-                                }
-                                SDL_RenderPresent(renderer);
+                                Draw_Cell(player, renderer, 560, 285, 600, 320);
                                 next_turn = 0;
                             }
                             else
@@ -230,15 +193,7 @@ int main(int argc, char **argv)
                             if (morpion[2][0] == 0)
                             {
                                 morpion[2][0] = player;
-                                if (player == 1)
-                                {
-                                    Draw_Cross(renderer, 160, 435);
-                                }
-                                if (player == 2)
-                                {
-                                    Draw_Circle(renderer, 190, 470, 50);
-                                }
-                                SDL_RenderPresent(renderer);
+                                Draw_Cell(player, renderer, 160, 435, 190, 470);
                                 next_turn = 0;
                             }
                             else
@@ -252,15 +207,7 @@ int main(int argc, char **argv)
                             if (morpion[2][1] == 0)
                             {
                                 morpion[2][1] = player;
-                                if (player == 1)
-                                {
-                                    Draw_Cross(renderer, 360, 435);
-                                }
-                                if (player == 2)
-                                {
-                                    Draw_Circle(renderer, 400, 470, 50);
-                                }
-                                SDL_RenderPresent(renderer);
+                                Draw_Cell(player, renderer, 360, 435, 400, 470);
                                 next_turn = 0;
                             }
                             else
@@ -274,15 +221,7 @@ int main(int argc, char **argv)
                             if (morpion[2][2] == 0)
                             {
                                 morpion[2][2] = player;
-                                if (player == 1)
-                                {
-                                    Draw_Cross(renderer, 560, 435);
-                                }
-                                if (player == 2)
-                                {
-                                    Draw_Circle(renderer, 600, 470, 50);
-                                }
-                                SDL_RenderPresent(renderer);
+                                Draw_Cell(player, renderer, 560, 435, 600, 470);
                                 next_turn = 0;
                             }
                             else
