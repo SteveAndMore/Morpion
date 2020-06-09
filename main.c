@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <SDL.h>
 
+SDL_Renderer *renderer = NULL;
+int player = 1;
+int next_turn = 1;
 int static morpion [3][3];
 //Gestion des erreurs
 void SDL_ExitWithError(char* message)
@@ -19,6 +22,7 @@ void Draw_Morpion(SDL_Renderer *renderer)
     SDL_RenderDrawLine(renderer, 100, 400, 700, 400);
     SDL_RenderPresent(renderer);
 }
+
 void Draw_Cross(SDL_Renderer *renderer, int x, int y)
 {
     SDL_RenderDrawLine(renderer, x, y, x + 75, y + 75);
@@ -62,9 +66,8 @@ void Draw_Circle(SDL_Renderer * renderer, int centreX, int centreY, int radius)
    }
 }
 
-
 //Affiche soit une croix, soit un cercle sur les coordonnées de la case
-void Draw_Cell(int player, SDL_Renderer *renderer, int crossx, int crossy, int circlex, int circley)
+void Draw_Cell(int crossx, int crossy, int circlex, int circley)
 {
     if (player == 1)
         Draw_Cross(renderer, crossx, crossy);
@@ -73,12 +76,21 @@ void Draw_Cell(int player, SDL_Renderer *renderer, int crossx, int crossy, int c
     SDL_RenderPresent(renderer);
 }
 
+void Put_Cell(int x, int y, int crossx, int crossy, int circlex, int circley)
+{
+    if (morpion[x][y] == 0)
+        {
+            morpion[x][y] = player;
+            Draw_Cell(crossx, crossy, circlex, circley);
+            next_turn = 0;
+        }
+    else
+        printf("Cette case est deja occupee.\n");
+}
 
 int main(int argc, char **argv) 
 {
     SDL_Window *window = NULL;
-    SDL_Renderer *renderer = NULL;
-
     //Lancement de la SDL
     if(SDL_Init(SDL_INIT_VIDEO) != 0)
         SDL_ExitWithError("Initialisation SDL.");
@@ -89,8 +101,7 @@ int main(int argc, char **argv)
         SDL_ExitWithError("Impossible de changer la couleur pour le rendu.");
     Draw_Morpion(renderer);
     printf("Morpion de Steve \nJoueur 1, cliquez sur la case ou vous voulez jouer.\n");
-    int player = 1;
-    int next_turn = 1;
+    //TODO: Afficher le tour du joueur
     //Gestion des events
     SDL_bool program_launched = SDL_TRUE;
     while (program_launched)
@@ -103,135 +114,41 @@ int main(int argc, char **argv)
                 case SDL_MOUSEBUTTONDOWN:
                     if (event.button.button == SDL_BUTTON_LEFT)
                     {
-                        //Boite 1
-                        if (event.button.x >= 100 && event.button.x <= 300 && event.button.y >= 100 && event.button.y <= 250)
+                        if (event.button.y <= 250)
                         {
-                            if (morpion[0][0] == 0)
-                            {
-                                morpion[0][0] = player;
-                                Draw_Cell(player, renderer, 160, 135, 190, 160);
-                                next_turn = 0;
-                            }
+                            //Boite 1
+                            if (event.button.x <= 300)
+                                Put_Cell(0, 0, 160, 135, 190, 160);
+                            //Boite 2
+                            else if (event.button.x <= 500)
+                                Put_Cell(0, 1, 360, 135, 400, 160);
+                            //Boite 3
                             else
-                            {
-                                printf("Cette case est deja occupee.\n");
-                            }
+                                Put_Cell(0, 2, 560, 135, 600, 160);
                         }
-                        //Boite 2
-                        else if (event.button.x >= 300 && event.button.x <= 500 && event.button.y >= 100 && event.button.y <= 250)
+                        else if (event.button.y <= 400)
                         {
-                            if (morpion[0][1] == 0)
-                            {
-                                morpion[0][1] = player;
-                                Draw_Cell(player, renderer, 360, 135, 400, 160);
-                                next_turn = 0;
-                            }
+                            //Boite 4
+                            if (event.button.x <= 300)
+                                Put_Cell(1, 0, 160, 285, 190, 320);
+                            //Boite 5
+                            else if (event.button.x <= 500)
+                                Put_Cell(1, 1, 360, 285, 400, 320);
+                            //Boite 6
                             else
-                            {
-                                printf("Cette case est deja occupee.\n");
-                            }
-                        }
-                        //Boite 3
-                        else if (event.button.x >= 500 && event.button.x <= 700 && event.button.y >= 100 && event.button.y <= 250)
-                        {
-                            if (morpion[0][2] == 0)
-                            {
-                                morpion[0][2] = player;
-                                Draw_Cell(player, renderer, 560, 135, 600, 160);
-                                next_turn = 0;
-                            }
-                            else
-                            {
-                                printf("Cette case est deja occupee.\n");
-                            }
-                        }
-                        //Boite 4
-                        else if (event.button.x >= 100 && event.button.x <= 300 && event.button.y >= 250 && event.button.y <= 400)
-                        {
-                            if (morpion[1][0] == 0)
-                            {
-                                morpion[1][0] = player;
-                                Draw_Cell(player, renderer, 160, 285, 190, 320);
-                                next_turn = 0;
-                            }
-                            else
-                            {
-                                printf("Cette case est deja occupee.\n");
-                            }
-                        }
-                        //Boite 5
-                        else if (event.button.x >= 300 && event.button.x <= 500 && event.button.y >= 250 && event.button.y <= 400)
-                        {
-                            if (morpion[1][1] == 0)
-                            {
-                                morpion[1][1] = player;
-                                Draw_Cell(player, renderer, 360, 285, 400, 320);
-                                next_turn = 0;
-                            }
-                            else
-                            {
-                                printf("Cette case est deja occupee.\n");
-                            }
-                        }
-                        //Boite 6
-                        else if (event.button.x >= 500 && event.button.x <= 700 && event.button.y >= 250 && event.button.y <= 400)
-                        {
-                            if (morpion[1][2] == 0)
-                            {
-                                morpion[1][2] = player;
-                                Draw_Cell(player, renderer, 560, 285, 600, 320);
-                                next_turn = 0;
-                            }
-                            else
-                            {
-                                printf("Cette case est deja occupee.\n");
-                            }
-                        }
-                        //Boite 7
-                        else if (event.button.x >= 100 && event.button.x <= 300 && event.button.y >= 400 && event.button.y <= 550)
-                        {
-                            if (morpion[2][0] == 0)
-                            {
-                                morpion[2][0] = player;
-                                Draw_Cell(player, renderer, 160, 435, 190, 470);
-                                next_turn = 0;
-                            }
-                            else
-                            {
-                                printf("Cette case est deja occupee.\n");
-                            }
-                        }
-                        //Boite 8
-                        else if (event.button.x >= 300 && event.button.x <= 500 && event.button.y >= 400 && event.button.y <= 550)
-                        {
-                            if (morpion[2][1] == 0)
-                            {
-                                morpion[2][1] = player;
-                                Draw_Cell(player, renderer, 360, 435, 400, 470);
-                                next_turn = 0;
-                            }
-                            else
-                            {
-                                printf("Cette case est deja occupee.\n");
-                            }
-                        }
-                        //Boite 9
-                        else if (event.button.x >= 500 && event.button.x <= 700 && event.button.y >= 400 && event.button.y <= 550)
-                        {
-                            if (morpion[2][2] == 0)
-                            {
-                                morpion[2][2] = player;
-                                Draw_Cell(player, renderer, 560, 435, 600, 470);
-                                next_turn = 0;
-                            }
-                            else
-                            {
-                                printf("Cette case est deja occupee.\n");
-                            }
+                                Put_Cell(1, 2, 560, 285, 600, 320);
                         }
                         else
                         {
-                            printf("Vous devez cliquer dans les cases.\n");
+                            //Boite 7
+                            if (event.button.x <= 300)
+                                Put_Cell(2, 0, 160, 435, 190, 470);
+                            //Boite 8
+                            else if (event.button.x <= 500)
+                                Put_Cell(2, 1, 360, 435, 400, 470);
+                            //Boite 9
+                            else
+                                Put_Cell(2, 2, 560, 435, 600, 470);
                         }
                         if (IsTie() == 0 || CheckGame(1) == 0 || CheckGame(2) == 0)
                         {
