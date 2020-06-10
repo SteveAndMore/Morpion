@@ -14,7 +14,7 @@ void SDL_ExitWithError(char* message)
     exit(EXIT_FAILURE);
 }
 //Affiche du morpion vide.
-void Draw_Morpion(SDL_Renderer *renderer)
+void Draw_Morpion()
 {
     SDL_RenderDrawLine(renderer, 300, 100, 300, 550);
     SDL_RenderDrawLine(renderer, 500, 100, 500, 550);
@@ -23,13 +23,13 @@ void Draw_Morpion(SDL_Renderer *renderer)
     SDL_RenderPresent(renderer);
 }
 //Affiche une croix aux coordonnées x et y.
-void Draw_Cross(SDL_Renderer *renderer, int x, int y)
+void Draw_Cross(int x, int y)
 {
     SDL_RenderDrawLine(renderer, x, y, x + 75, y + 75);
     SDL_RenderDrawLine(renderer, x + 75, y, x, y + 75);
 }
 //Affiche un cercle de rayon radius aux coordonnées x et y.
-void Draw_Circle(SDL_Renderer * renderer, int centreX, int centreY, int radius)
+void Draw_Circle(int centreX, int centreY, int radius)
 {
    const int diameter = (radius * 2);
    int x = (radius - 1);
@@ -69,12 +69,12 @@ void Draw_Circle(SDL_Renderer * renderer, int centreX, int centreY, int radius)
 void Draw_Cell(int crossx, int crossy, int circlex, int circley)
 {
     if (player == 1)
-        Draw_Cross(renderer, crossx, crossy);
+        Draw_Cross(crossx, crossy);
     if (player == 2)
-        Draw_Circle(renderer, circlex, circley, 50);
+        Draw_Circle(circlex, circley, 50);
     SDL_RenderPresent(renderer);
 }
-//Mets la case dans le morpion.
+//Mets la case dans le morpion et l'affiche.
 void Put_Cell(int x, int y, int crossx, int crossy, int circlex, int circley)
 {
     if (morpion[x][y] == 0)
