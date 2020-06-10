@@ -13,7 +13,7 @@ void SDL_ExitWithError(char* message)
     SDL_Quit();
     exit(EXIT_FAILURE);
 }
-//Affichage du morpion
+//Affiche du morpion vide.
 void Draw_Morpion(SDL_Renderer *renderer)
 {
     SDL_RenderDrawLine(renderer, 300, 100, 300, 550);
@@ -22,13 +22,13 @@ void Draw_Morpion(SDL_Renderer *renderer)
     SDL_RenderDrawLine(renderer, 100, 400, 700, 400);
     SDL_RenderPresent(renderer);
 }
-
+//Affiche une croix aux coordonnées x et y.
 void Draw_Cross(SDL_Renderer *renderer, int x, int y)
 {
     SDL_RenderDrawLine(renderer, x, y, x + 75, y + 75);
     SDL_RenderDrawLine(renderer, x + 75, y, x, y + 75);
 }
-
+//Affiche un cercle de rayon radius aux coordonnées x et y.
 void Draw_Circle(SDL_Renderer * renderer, int centreX, int centreY, int radius)
 {
    const int diameter = (radius * 2);
@@ -65,8 +65,7 @@ void Draw_Circle(SDL_Renderer * renderer, int centreX, int centreY, int radius)
       }
    }
 }
-
-//Affiche soit une croix, soit un cercle sur les coordonnées de la case
+//Affiche soit une croix, soit un cercle aux cordonnées de la case.
 void Draw_Cell(int crossx, int crossy, int circlex, int circley)
 {
     if (player == 1)
@@ -75,7 +74,7 @@ void Draw_Cell(int crossx, int crossy, int circlex, int circley)
         Draw_Circle(renderer, circlex, circley, 50);
     SDL_RenderPresent(renderer);
 }
-
+//Mets la case dans le morpion.
 void Put_Cell(int x, int y, int crossx, int crossy, int circlex, int circley)
 {
     if (morpion[x][y] == 0)
@@ -87,7 +86,114 @@ void Put_Cell(int x, int y, int crossx, int crossy, int circlex, int circley)
     else
         printf("Cette case est deja occupee.\n");
 }
-
+//Check sur une case si elle fait partie d'une ligne
+int CheckMove(int player, int i, int j)
+{
+    if (morpion[i][j] == player)
+    {
+        if (i == 0)
+        {
+            //Bas-Droite
+            if (j == 0)
+            {
+                if (morpion[i + 1][j + 1] == player)
+                {
+                    if (morpion[i + 2][j + 2] == player)
+                        return 0;
+                }
+            }
+            //Haut-Droite 
+            if (j == 2)
+            { 
+                if (morpion[i + 1][j - 1] == player)
+                {
+                    if (morpion[i + 2][j - 2] == player)
+                        return 0;
+                }
+            }
+            //Milieu-Droite
+            if (morpion[i + 1][j] == player)
+            {
+                if (morpion[i + 2][j] == player)
+                    return 0;
+            } 
+        }
+        if (i == 2)
+        {
+            //Bas-Gauche
+            if (j == 0)
+            {
+                if (morpion[i - 1][j + 1] == player)
+                {
+                    if (morpion[i - 2][j + 2] == player)
+                        return 0;
+                }
+            }
+            //Haut-Gauche
+            if (j == 2)
+            {
+                if (morpion[i - 1][j + 1] == player)
+                {
+                    if (morpion[i - 2][j + 2] == player)
+                        return 0;
+                }
+            }
+            //Milieu-Gauche
+            if (morpion[i - 1][j] == player)
+            {
+                if (morpion[i - 2][j] == player)
+                    return 0;
+            }
+        }
+        //Milieu-Bas
+        if (j == 0)
+        {
+            if (morpion[i][j + 1] == player)
+            {
+                if (morpion[i][j + 2] == player)
+                    return 0;
+            }
+        }
+        //Milieu-Haut
+        if (j == 2)
+        {
+            if (morpion[i][j - 1] == player)
+            {
+                if (morpion[i][j - 2] == player)
+                    return 0;
+            }
+        }
+    }
+    return 1;
+}
+//Check si le jeu est gagné par un joueur
+int CheckGame(int player)
+{
+    int i, j;
+    for (i = 0; i < 3; i++)
+    {
+        for (j = 0; j < 3; j++)
+        {
+            if (CheckMove(player, i, j) == 0)
+                return 0;
+        }
+    }
+    return 1;
+}
+//Check si la partie finie sur une égalité
+int IsTie()
+{
+    int i, j;
+    for (i = 0; i < 3; i++)
+    {
+        for (j = 0; j < 3; j++)
+        {
+            if (morpion[i][j] == 0)
+                return 1;
+        }
+    }
+    return 0;
+}
 int main(int argc, char **argv) 
 {
     SDL_Window *window = NULL;
@@ -150,10 +256,12 @@ int main(int argc, char **argv)
                             else
                                 Put_Cell(2, 2, 560, 435, 600, 470);
                         }
-                        if (IsTie() == 0 || CheckGame(1) == 0 || CheckGame(2) == 0)
+                        if (CheckGame(1) == 0 || CheckGame(2) == 0 || IsTie() == 0)
                         {
-                            if (IsTie() == 0)
-                                printf("Egalite !\n");
+                            if (CheckGame(1) == 0 || CheckGame(2) == 0) 
+                                printf("Joueur %d a gagne !\n", player);
+                            else
+                                printf("Egalite !\n");     
                             int i, j;
                             for (i = 0; i < 3; i++)
                             {
@@ -180,8 +288,7 @@ int main(int argc, char **argv)
                                 printf("Tour du Joueur 1\n");
                                 player--;
                             }
-                        }
-                        
+                        }  
                     }
                     continue;
                 case SDL_QUIT:
@@ -197,115 +304,4 @@ int main(int argc, char **argv)
     SDL_DestroyWindow(window);
     SDL_Quit();
     return EXIT_SUCCESS;
-}
-
-//Check sur une case si elle fait partie d'une ligne
-int CheckMove(int player, int i, int j)
-{
-    if (morpion[i][j] == player)
-        {
-            //Diagonales
-            //Bas-Droite
-            if (i == 0 && j == 0)
-                if (morpion[i + 1][j + 1] == player)
-                {
-                    if (morpion[i + 2][j + 2] == player)
-                    {
-                        return 0;
-                    }
-                }
-            //Haut-Droite  
-            if (i == 0 && j == 2)
-                if (morpion[i + 1][j - 1] == player)
-                {
-                    if (morpion[i + 2][j - 2] == player)
-                    {
-                        return 0;
-                    }
-                }
-            //Bas-Gauche
-            if (i == 2 && j == 0)
-                if (morpion[i - 1][j + 1] == player)
-                {
-                    if (morpion[i - 2][j + 2] == player)
-                    {
-                        return 0;
-                    }
-                }  
-            //Haut-Gauche
-            if (i == 2 && j == 2)
-                if (morpion[i - 1][j - 1] == player)
-                {
-                    if (morpion[i - 2][j - 2] == player)
-                    {
-                        return 0;
-                    }
-                }   
-            //Droites
-            if (i == 0)
-                if (morpion[i + 1][j] == player)
-                {
-                    if (morpion[i + 2][j] == player)
-                    {
-                        return 0;
-                    }
-                }          
-            if (j == 0)
-                if (morpion[i][j + 1] == player)
-                {
-                    if (morpion[i][j + 2] == player)
-                    {
-                        return 0;
-                    }
-                }   
-            if (i == 2)
-                if (morpion[i - 1][j] == player)
-                {
-                    if (morpion[i - 2][j] == player)
-                    {
-                        return 0;
-                    }
-                }  
-            if (j == 2)
-                if (morpion[i][j - 1] == player)
-                {
-                    if (morpion[i][j - 2] == player)
-                    {
-                        return 0;
-                    }
-                }
-            return 1; 
-        }
-        return 1;
-}
-//Check si le jeu est gagné par un joueur
-int CheckGame(int player)
-{
-    int i, j;
-    for (i = 0; i < 3; i++)
-    {
-        for (j = 0; j < 3; j++)
-        {
-            if (CheckMove(player, i, j) == 0)
-            {
-                printf("Joueur %d a gagne !\n", player);
-                return 0;
-            }
-        }
-    }
-    return 1;
-}
-//Check si la partie finie sur une égalité
-int IsTie()
-{
-    int i, j;
-    for (i = 0; i < 3; i++)
-    {
-        for (j = 0; j < 3; j++)
-        {
-            if (morpion[i][j] == 0)
-                return 1;
-        }
-    }
-    return 0;
 }
